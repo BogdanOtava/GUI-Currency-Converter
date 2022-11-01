@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 from converter import Converter
+from datetime import datetime
 import tkinter as tk
 
 class Menu(tk.Tk):
@@ -10,15 +11,30 @@ class Menu(tk.Tk):
         # Window
         self.title("Currency Converter")
         self.geometry("400x400")
-        self.config(bg="#283747")
+        self.config(bg="#808b96")
         self.resizable(False, False)
         self.rates=Converter.get_currencies(self)
+
+        # Date Label
+        self.date = Label(
+            self,
+            text=datetime.now().strftime("%d %B %Y"),
+            bg="#808b96",
+            fg="white",
+            font=("franklin gothic medium", 10)
+        )
+
+        self.date.place(
+            x=200,
+            y=15,
+            anchor="center"
+        )
 
         # 'From' & 'To' Labels
         self.from_currency = Label(
             self, 
             text="From", 
-            bg="#283747", 
+            bg="#808b96", 
             fg="white", 
             font=("franklin gothic medium", 15)
             )
@@ -32,7 +48,7 @@ class Menu(tk.Tk):
         self.to_currency = Label(
             self, 
             text="To", 
-            bg="#283747", 
+            bg="#808b96", 
             fg="white", 
             font=("franklin gothic medium", 15)
             )
@@ -82,12 +98,85 @@ class Menu(tk.Tk):
         self.amount = Label(
             self, 
             text="Amount", 
-            bg="#283747", 
+            bg="#808b96", 
             fg="white", 
             font=("franklin gothic medium", 15))
 
-        self.amount.place(x=200, y=125, anchor="center")
+        self.amount.place(
+            x=200, 
+            y=125, 
+            anchor="center"
+            )
 
         self.amount_box = Entry(self)
-        self.amount_box.config(width=30)
-        self.amount_box.place(x=200, y=150, anchor="center")
+        self.amount_box.place(
+            x=200, 
+            y=150, 
+            anchor="center",
+            width=200
+            )
+
+        # Output Label
+        self.output_box = Label(
+            self, 
+            text="",
+            background="white",
+            fg="white", 
+            font=("franklin gothic medium", 15),
+            relief="sunken",
+            width=15
+            )
+
+        self.output_box.place(
+            x=200, 
+            y=200, 
+            anchor="center"
+            )
+
+        # Convert Button
+        self.convert = Button(
+            self,
+            text="Convert",
+            bg="#27ae60",
+            fg="white",
+            font=("franklin gothic medium", 10),
+            width=10
+        )
+
+        self.convert.place(
+            x=100,
+            y=275,
+            anchor="center"
+        )
+
+        # Clear Button
+        self.clear = Button(
+            self,
+            text="Clear",
+            bg = "#27ae60",
+            fg="white",
+            font=("franklin gothic medium", 10),
+            width=10
+        )
+
+        self.clear.place(
+            x=200,
+            y=275,
+            anchor="center"
+        )
+
+        # Exit Button
+        self.exit = Button(
+            self,
+            text="Exit",
+            bg="#27ae60",
+            fg="white",
+            font=("franklin gothic medium", 10),
+            width=10
+        )
+
+        self.exit.place(
+            x=300,
+            y=275,
+            anchor="center"
+        )
