@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 from datetime import datetime
-from config import IMAGE
+from config import *
 import tkinter as tk
 import requests
 
@@ -22,7 +22,7 @@ class App(tk.Tk):
             text=datetime.now().strftime("%d %B %Y"), 
             bg="#808b96", 
             fg="white", 
-            font=("franklin gothic medium", 10)
+            font=(FONT_TYPE, FONT_SIZE)
             )
 
         self.date.place(x=200, y=15, anchor="center")
@@ -33,7 +33,7 @@ class App(tk.Tk):
             text="From",
             bg="#808b96",
             fg="white",
-            font=("franklin gothic medium", 10)
+            font=(FONT_TYPE, FONT_SIZE)
             )
 
         self.from_currency.place(x=100, y=50, anchor="center")
@@ -43,7 +43,7 @@ class App(tk.Tk):
             text="To",
             bg="#808b96",
             fg="white",
-            font=("franklin gothic medium", 10)
+            font=(FONT_TYPE, FONT_SIZE)
         )
 
         self.to_currency.place(x=300, y=50, anchor="center")
@@ -81,7 +81,7 @@ class App(tk.Tk):
             text="Amount",
             bg="#808b96",
             fg="white",
-            font=("franklin gothic medium", 10)
+            font=(FONT_TYPE, FONT_SIZE)
         )
 
         self.amount.place(x=200, y=125, anchor="center")
@@ -90,18 +90,51 @@ class App(tk.Tk):
 
         self.amount_box.place(x=200, y=150, anchor="center", width=200)
 
-        # 'Output' Label
-        self.output = Label(
+        # 'Rate' Label
+        self.rate = Label(
+            self,
+            text="Conversion Rate",
+            bg="#808b96",
+            fg="white",
+            font=(FONT_TYPE, FONT_SIZE)
+        )
+
+        self.rate.place(x=200, y=185, anchor="center")
+
+        self.rate_output = Label(
             self,
             text="",
             bg="white",
             fg="black",
-            font=("franklin gothic medium", 10),
+            font=(FONT_TYPE, FONT_SIZE),
             relief="sunken",
-            width=15
+            width=20
         )
 
-        self.output.place(x=200, y=200, anchor="center")
+        self. rate_output.place(x=200, y=210, anchor="center")
+
+        # 'Conversion' Label
+        self.conversion = Label(
+            self,
+            text="Output",
+            bg="#808b96",
+            fg="white",
+            font=(FONT_TYPE, FONT_SIZE)
+        )
+
+        self.conversion.place(x=200, y=245, anchor="center")
+
+        self.conversion_output = Label(
+            self,
+            text="",
+            bg="white",
+            fg="black",
+            font=(FONT_TYPE, FONT_SIZE),
+            relief="sunken",
+            width=20
+        )
+
+        self.conversion_output.place(x=200, y=270, anchor="center")
 
         # 'Convert' Button
         self.convert = Button(
@@ -109,12 +142,12 @@ class App(tk.Tk):
             text="Convert",
             bg="#27ae60",
             fg="white",
-            font=("franklin gothic medium", 10),
+            font=(FONT_TYPE, FONT_SIZE),
             width=10,
             command=self.__convert_amount
         )
 
-        self.convert.place(x=100, y=275, anchor="center")
+        self.convert.place(x=100, y=325, anchor="center")
 
         # 'Clear' Button
         self.clear = Button(
@@ -122,12 +155,12 @@ class App(tk.Tk):
             text="Clear",
             bg="#27ae60",
             fg="white",
-            font=("franklin gothic medium", 10),
+            font=(FONT_TYPE, FONT_SIZE),
             width=10,
             command=self.__clear_queries
         )
 
-        self.clear.place(x=200, y=275, anchor="center")
+        self.clear.place(x=200, y=325, anchor="center")
 
         # 'Exit' Button
         self.exit = Button(
@@ -135,12 +168,23 @@ class App(tk.Tk):
             text="Exit",
             bg="#27ae60",
             fg="white",
-            font=("franklin gothic medium", 10),
+            font=(FONT_TYPE, FONT_SIZE),
             width=10,
             command=self.destroy
         )
 
-        self.exit.place(x=300, y=275, anchor="center")
+        self.exit.place(x=300, y=325, anchor="center")
+
+        # 'Version' Label
+        self.version = Label(
+            self,
+            text="v1.1",
+            bg="#808b96",
+            fg="white",
+            font=(FONT_TYPE, FONT_SIZE)
+        )
+
+        self.version.place(x=385, y=390, anchor="center")
 
     def __connect_to_api(self):
         """
@@ -170,14 +214,19 @@ class App(tk.Tk):
 
     def __convert_amount(self):
         """
-        Returns the amount of the exchange.
+        Returns the amount and the rate at which the exchange was made.
         """
         result = self.__connect_to_api()["result"]
+        rate = self.__connect_to_api()["info"]["rate"]
 
-        return self.output.config(text=f"{result}")
+        return self.conversion_output.config(text=f"{result:.2f}"), self.rate_output.config(text=f"1 {self.from_currencies.get()} = {rate} {self.to_currencies.get()}")
 
     def __clear_queries(self):
+        """
+        Clears the queries in the GUI.
+        """
         input_box = self.amount_box.delete(0, END)
-        output_box = self.output.config(text="")
+        output_box = self.conversion_output.config(text="")
+        rate_box = self.rate_output.config(text="")
 
-        return input_box, output_box
+        return input_box, output_box, rate_box
