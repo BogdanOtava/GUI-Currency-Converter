@@ -1,14 +1,7 @@
-# Description
+## Description
 
-Calculates the conversion between two given currencies. It has a simple, straight-forward **GUI** made with [Tkinter](https://docs.python.org/3/library/tkinter.html).
-The conversion rates are up-to-date, provided by [exchangerate.host](https://exchangerate.host/#/docs). 
+**GUI** based currency converter that has the _latest rates_ and supports more than _150 currencies_. The **GUI** was made with [Tkinter](https://docs.python.org/3/library/tkinter.html) and the rates and the conversion is made by [exchange.host](https://exchangerate.host/#/), a free service **API** that provides free current and historical exchange rates & crypto exchange rates.
 
-# How It Works
+Attached below is an image of the interface. It's quite straight-forward, after selecting the currencies and amount, press the **Convert** button to make the conversion or the **Clear** button to reset it. The **Exit** button will terminate the program.
 
-Attached below is the interface of the converter. 
-
- - To use it, select the currencies from the _dropdown menus__, add the amount and press the **convert** button. 
- - The **clear** button will reset the _amount_, _conversion rate_ and the _output_ boxes. 
- - The **exit** button will terminate the program.
-
-<img style="float: right;" src="https://i.imgur.com/2fVS1RK.jpeg">
+<img style="float: right;" src="https://i.imgur.com/EQtE6zK.jpg">
