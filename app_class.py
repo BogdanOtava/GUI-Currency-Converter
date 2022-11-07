@@ -43,34 +43,36 @@ class App(tk.Tk):
             text="To",
             bg="#808b96",
             fg="white",
-            font=(FONT_TYPE, FONT_SIZE)
+            font=(FONT_TYPE, FONT_SIZE),
         )
 
         self.to_currency.place(x=300, y=50, anchor="center")
 
         # 'From' & 'To' Entry Boxes
         self.from_currencies = StringVar(self)
-        self.from_currencies.set("USD")
+        self.from_currencies.set("USD - United States Dollar")
 
         self.from_box = ttk.Combobox(
             self,
-            width=20,
+            width=25,
             textvariable=self.from_currencies,
             values=list(self.__get_currencies()),
-            state="readonly"
+            state="readonly",
+            justify="center"
         )
 
         self.from_box.place(x=100, y=75, anchor="center")
 
         self.to_currencies = StringVar(self)
-        self.to_currencies.set("EUR")
+        self.to_currencies.set("EUR - Euro")
 
         self.to_box = ttk.Combobox(
             self,
-            width=20,
+            width=25,
             textvariable=self.to_currencies,
             values=list(self.__get_currencies()),
-            state="readonly"
+            state="readonly",
+            justify="center"
         )
 
         self.to_box.place(x=300, y=75, anchor="center")
@@ -86,7 +88,10 @@ class App(tk.Tk):
 
         self.amount.place(x=200, y=125, anchor="center")
 
-        self.amount_box = Entry(self)
+        self.amount_box = Entry(
+            self, 
+            justify="center"
+            )
 
         self.amount_box.place(x=200, y=150, anchor="center", width=200)
 
@@ -108,7 +113,8 @@ class App(tk.Tk):
             fg="black",
             font=(FONT_TYPE, FONT_SIZE),
             relief="sunken",
-            width=20
+            width=20,
+            justify="center"
         )
 
         self. rate_output.place(x=200, y=210, anchor="center")
@@ -131,7 +137,8 @@ class App(tk.Tk):
             fg="black",
             font=(FONT_TYPE, FONT_SIZE),
             relief="sunken",
-            width=20
+            width=20,
+            justify="center"
         )
 
         self.conversion_output.place(x=200, y=270, anchor="center")
@@ -178,7 +185,7 @@ class App(tk.Tk):
         # 'Version' Label
         self.version = Label(
             self,
-            text="v1.1",
+            text="v1.2",
             bg="#808b96",
             fg="white",
             font=(FONT_TYPE, FONT_SIZE)
@@ -190,8 +197,10 @@ class App(tk.Tk):
         """
         Connects to the API that provides the rates and conversion.
         """
-        
-        url = f"https://api.exchangerate.host/convert?from={self.from_currencies.get()}&to={self.to_currencies.get()}&amount={self.amount_box.get()}"
+        try:
+            url = f"https://api.exchangerate.host/convert?from={self.from_currencies.get()[0:3]}&to={self.to_currencies.get()[0:3]}&amount={self.amount_box.get()}&source={DATA_SOURCE}"
+        except requests.exceptions.RequestException as error:
+            raise SystemExit(error)
 
         response = requests.get(url)
         data = response.json()
@@ -202,15 +211,18 @@ class App(tk.Tk):
         """
         Returns the currencies supported by the API.
         """
-
-        url = "https://api.exchangerate.host/latest"
+        try:
+            url = "https://api.exchangerate.host/symbols"
+        except requests.exceptions.RequestException as error:
+            raise SystemExit(error)
 
         response = requests.get(url)
         data = response.json()
 
-        rates = data.get("rates")
+        symbols = data["symbols"]
 
-        return rates
+        for code, name in symbols.items():
+            yield code + " - " + name["description"]
 
     def __convert_amount(self):
         """
@@ -219,7 +231,7 @@ class App(tk.Tk):
         result = self.__connect_to_api()["result"]
         rate = self.__connect_to_api()["info"]["rate"]
 
-        return self.conversion_output.config(text=f"{result:.2f}"), self.rate_output.config(text=f"1 {self.from_currencies.get()} = {rate} {self.to_currencies.get()}")
+        return self.conversion_output.config(text=f"{result:.2f}"), self.rate_output.config(text=f"1 {self.from_currencies.get()[0:3]} = {rate} {self.to_currencies.get()[0:3]}")
 
     def __clear_queries(self):
         """
